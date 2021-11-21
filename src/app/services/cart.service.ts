@@ -7,12 +7,14 @@ import { Subject } from 'rxjs';
 })
 export class CartService {
 
-  cartItems: CartItem[] = [];
+  cartItems: CartItem[] ;
 
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
 
-  constructor() { }
+  constructor() { 
+    this.cartItems = JSON.parse(sessionStorage.getItem('cartItems')) ? JSON.parse(sessionStorage.getItem('cartItems')) : [];
+  }
 
   addToCart(theCartItem: CartItem) {
 
@@ -58,6 +60,8 @@ export class CartService {
 
     // log cart data just for debugging purposes
     this.logCartData(totalPriceValue, totalQuantityValue);
+
+    this.persistCartItems();
   }
 
   logCartData(totalPriceValue: number, totalQuantityValue: number) {
@@ -71,4 +75,35 @@ export class CartService {
     console.log(`totalPrice: ${totalPriceValue.toFixed(2)}, totalQuantity: ${totalQuantityValue}`);
     console.log('----');
   }
+
+
+  decrementQuantity(theCartItem: CartItem) {
+
+    theCartItem.quantity--;
+
+    if (theCartItem.quantity === 0) {
+      this.remove(theCartItem);
+    }
+    else {
+      this.computeCartTotals();
+    }
+  }
+
+  remove(theCartItem: CartItem) {
+
+    // get index of item in the array
+    const itemIndex = this.cartItems.findIndex( tempCartItem => tempCartItem.id === theCartItem.id );
+
+    // if found, remove the item from the array at the given index
+    if (itemIndex > -1) {
+      this.cartItems.splice(itemIndex, 1);
+
+      this.computeCartTotals();
+    }
+  }
+
+  persistCartItems() {
+    sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
+
 }
