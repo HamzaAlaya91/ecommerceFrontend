@@ -8,14 +8,14 @@
                 <!-- loop over the collection of products -->
                 <div *ngFor="let tempProduct of products" class="column-m">
 
-                    <div class="product-box">
+                    <div class="product-box" >
 
                         <a routerLink="/products/{{ tempProduct.id }}">
                             <img src="{{ tempProduct.imageUrl }}" class="img-responsive">
                         </a>
 
                         <a routerLink="/products/{{ tempProduct.id }}">
-                            <h1>{{ tempProduct.name }}</h1>
+                            <h1>{{ tempProduct.name  }}</h1>
                         </a>
                         
                         <div class="price">{{ tempProduct.unitPrice | currency:'USD' }}</div>
